@@ -1,4 +1,6 @@
-/* FF0000 */
+body{font-size: 15px;}
+
+
 section.topbar {
     display: flex;
     justify-content: space-between;
@@ -17,8 +19,8 @@ section.topbar>a {
     color: white;
     display: inline-block;
     font-size: 15px;
-    padding: 5px 11px;
-    line-height: 20px;
+     padding: 5px 11px;
+      line-height: 20px;
     position: relative;
 }
 
@@ -42,3 +44,21 @@ section.playLists {}
 section.songs {}
 
 section.art {}
+
+.tabs{
+    display: flex;
+}
+.tabs>li{
+    width: 33.333333%;
+    text-align: center;
+}
+.tabs > li.active{
+    background: red;
+}
+.tab-content > li{
+display: none;
+}
+.tab-content > li.active{
+    background: red;
+    display: block;
+}
