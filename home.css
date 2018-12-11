@@ -1,4 +1,6 @@
-body{font-size: 15px;}
+body {
+    font-size: 15px;
+}
 
 
 section.topbar {
@@ -19,8 +21,8 @@ section.topbar>a {
     color: white;
     display: inline-block;
     font-size: 15px;
-     padding: 5px 11px;
-      line-height: 20px;
+    padding: 5px 11px;
+    line-height: 20px;
     position: relative;
 }
 
@@ -37,28 +39,91 @@ section.topbar>a::after {
     transform-origin: 0 0;
 }
 
-section.globalTabs {}
+/* tabs */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+
+}
+
+.tabs>li {
+    width: 33.333333%;
+    text-align: center;
+    line-height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tabs>li>.text {
+    padding: 10px 5px;
+    position: relative;
+    top: 1px;
+}
+
+.tabs>li.active {
+    color: #d43c33;
+}
+
+.tabs>li.active>.text {}
+
+.tabs>li.active>.text::after {
+    content: '';
+    position: absolute;
+    height: 2px;
+    background: #d43c33;
+    bottom: 1px;
+    left: 0;
+    width: 100%;
+}
+
+.tab-content>li {
+    display: none;
+}
+
+.tab-content>li.active {
+    display: block;
+}
+
+
 
 section.playLists {}
 
+section.playLists>h2 {
+    border-left: 2px solid #d43c33;
+    font-size: 17px;
+    line-height: 1;
+    padding-left: 8px;
+    margin:20px 0 8px ;
+    
+}
+
+section.playLists>ol.songs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+section.playLists>ol.songs >li{
+    width: 32.8%;
+    margin: 8px 0;
+}
+
+section.playLists>ol.songs>li p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 18px;
+    height: 36px;
+    padding: 0 6px;
+    
+}
+
+section.playLists>ol.songs>li img {
+    width: 100%;
+}
 section.songs {}
 
 section.art {}
-
-.tabs{
-    display: flex;
-}
-.tabs>li{
-    width: 33.333333%;
-    text-align: center;
-}
-.tabs > li.active{
-    background: red;
-}
-.tab-content > li{
-display: none;
-}
-.tab-content > li.active{
-    background: red;
-    display: block;
-}
