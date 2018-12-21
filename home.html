@@ -177,7 +177,12 @@
                 </section>
             </li>
             <li class="page-2">page2</li>
-            <li class="page-3">page3</li>
+            <li class="page-3">
+                <input id="search" type="text" style="background: #ebecec;">
+                <ol id="searchResult">
+                    
+                </ol>
+            </li>
         </ol>
 
     </div>
@@ -186,13 +191,13 @@
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
     <script src="./node_modules/leancloud-storage/dist/av-min.js"></script>
     <script>
-        $('.tabs').on('click','li',function(e){
-           let $li = $(e.currentTarget)
-           let index = $li.index()
-           $li.addClass('active').siblings().removeClass('active')
-           $('.tab-content').children().eq(index).addClass('active').siblings().removeClass('active')           
+        $('.tabs').on('click', 'li', function (e) {
+            let $li = $(e.currentTarget)
+            let index = $li.index()
+            $li.addClass('active').siblings().removeClass('active')
+            $('.tab-content').children().eq(index).addClass('active').siblings().removeClass('active')
         })
-</script>
+    </script>
     <script>
         var APP_ID = '2NIzNhvryvMKYLU0AzQvdg7e-gzGzoHsz';
         var APP_KEY = 'LOtHdUdIY9WpGGvxq4454R4c';
@@ -201,120 +206,81 @@
             appId: APP_ID,
             appKey: APP_KEY
         });
-    
-    let $olSongs = $('ol#songs')
 
-    var query = new AV.Query('Song');
-    query.find().then(function (results){
-        $('#songs-loading').remove()  //加载成功就将loading 去除
-        for (var i = 0; i < results.length; i++) {
-            let song = results[i].attributes
-            let li = `
-            <li>
-                            <h3>${song.name}
-                            </h3>
-                            <p>
-                                <svg class="icon icon-sq">
-                                    <use xlink:href="#icon-sq"></use>
-                                </svg>
-                                ${song.singer}</p>
-                            <a class="playButton" href="#">
-                                <svg class="icon icon-play">
-                                    <use xlink:href="#icon-play"></use>
-                                </svg>
-                            </a>
-                        </li>
-            `
-            $olSongs.append(li)
-        }
-    }, function (error) {
-        alert('获取歌曲失败')
-    })
-    
-    /*  
-        var SongObject = AV.Object.extend('Song');// 选择表名
-        var songObject = new SongObject();//生成一条数据
-        songObject.set('name','1')
-        var songObject2 = new SongObject()
-        let songs = [songObject,songObject2]
-        AV.Object.saveAll(songs)
-    */
+        let $olSongs = $('ol#songs')
+        var query = new AV.Query('Song');
+        query.find().then(function (results) {
+            $('#songs-loading').remove()  //加载成功就将loading 去除
+            for (var i = 0; i < results.length; i++) {
+                let song = results[i].attributes
+                let li = `
+                <li>
+                                <h3>${song.name}
+                                </h3>
+                                <p>
+                                    <svg class="icon icon-sq">
+                                        <use xlink:href="#icon-sq"></use>
+                                    </svg>
+                                    ${song.singer}</p>
+                                <a class="playButton" href="#">
+                                    <svg class="icon icon-play">
+                                        <use xlink:href="#icon-play"></use>
+                                    </svg>
+                                </a>
+                            </li>
+                `
+                $olSongs.append(li)
+            }
+        }, function (error) {
+            alert('获取歌曲失败')
+        })
+
+        $('input#search').on('input', function (e) {
+            let $input = $(e.currentTarget)
+            let value = $input.val().trim()
+             if(value === ''){return}
+            var query = new AV.Query('Song');
+            query.contains('name', value);
+            query.find().then(function (results) {
+                $('#searchResult').empty() //成功之后将之前的结果清除
+                if (results.length === 0) {
+                    $('#searchResult').html('没有结果')
+                } else {
+                    for (var i = 0; i < results.length; i++) {
+                        let song = results[i].attributes
+                        let li = `
+                        <li date-id="${song.objectId}">${song.name}-${song.singer}</li>
+                    `
+                        $('#searchResult').append(li)
+                    }
+
+                }
+            })
+        })
 
 
-
-    /*
-        songObject.save({
-                name: '烹爱', //数据里面的内容
-                singer: '孙子涵',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/10.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
-            songObject.save({
-                name: '约定', //数据里面的内容
-                singer: '周蕙',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/1.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
-            songObject.save({
-                name: '阿楚姑娘', //数据里面的内容
-                singer: '袁娅维',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/2.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
-            songObject.save({
-                name: '成都', //数据里面的内容
-                singer: '赵雷',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/3.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
-            songObject.save({
-                name: '火柴天堂', //数据里面的内容
-                singer: '熊天平',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/4.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
-            songObject.save({
-                name: '野子', //数据里面的内容
-                singer: '苏运莹',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/5.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
-            songObject.save({
-                name: '左边', //数据里面的内容
-                singer: '杨丞琳',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/6.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
-           songObject.save({
-                name: '沧海一声笑', //数据里面的内容
-                singer: '许冠杰',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/7.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            }) 
-            songObject.save({
-                name: '红昭愿', //数据里面的内容
-                singer: '音阙诗听',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/8.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
-            songObject.save({
-                name: '大鱼', //数据里面的内容
-                singer: '周深',
-                url: 'http://pgptqkwq1.bkt.clouddn.com/9.mp3'
-            }).then(function (object) {
-                alert('保存成功');
-            })
+        /*  
+            var SongObject = AV.Object.extend('Song');// 选择表名
+            var songObject = new SongObject();//生成一条数据
         */
-        </script>
+        
+        /* 批量上传
+            songObject.set('name','1')
+            var songObject2 = new SongObject()
+            let songs = [songObject,songObject2]
+            AV.Object.saveAll(songs)
+        */
+
+        /* 单个上传
+                songObject.save({
+                    name: '大鱼', //数据里面的内容
+                    singer: '周深',
+                    url: 'http://pgptqkwq1.bkt.clouddn.com/9.mp3'
+                }).then(function (object) {
+                    alert('保存成功');
+                })
+            */
+    </script>
 </body>
 
 </html>
