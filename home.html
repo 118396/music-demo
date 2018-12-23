@@ -55,7 +55,7 @@
                     </svg>
                 </div>
                 <a href="#">下载 APP</a>
-    
+
             </section>
             <section class="globalTabs">
                 <ol class="tabs">
@@ -74,9 +74,9 @@
         <ol class="tab-content noCollapse">
             <li class="page-1 active">
                 <section class="playLists">
-                    <h2 class="sectionTitle" >推荐歌单</h2>
-                    <ol  class="songs">
-                         <li>
+                    <h2 class="sectionTitle">推荐歌单</h2>
+                    <ol class="songs">
+                        <li>
                             <div class="cover"></div>
                             <img src="https://i.loli.net/2018/12/11/5c0ee607aad9f.jpg" alt="封面">
                             <p>好多文字好多文字好多文字好多文字好多文字</p>
@@ -105,15 +105,17 @@
                             <div class="cover"></div>
                             <img src="https://i.loli.net/2018/12/11/5c0ee607aad9f.jpg" alt="封面">
                             <p>好多文字好多文字好多文字好多文字好多文字</p>
-                        </li> 
+                        </li>
                     </ol>
-                    </section>
+                </section>
                 <section class="songs">
                     <h2 class="sectionTitle">最新音乐</h2>
                     <ol id="songs" class="list">
-                    
-                        <div id="songs-loading" class="square-spin" style="margin: 0 auto; width: 50px;"><div></div></div>  
-                    
+
+                        <div id="songs-loading" class="square-spin" style="margin: 0 auto; width: 50px;">
+                            <div></div>
+                        </div>
+
                     </ol>
                 </section>
                 <section class="art">
@@ -170,9 +172,9 @@
                         <a href="#">打开APP，发现更多好音乐 &gt; </a>
                     </div>
                     <div class="copyright">
-                        
-                            网易公司版权所有©1997-2018 杭州乐读科技有限公司运营
-                        
+
+                        网易公司版权所有©1997-2018 杭州乐读科技有限公司运营
+
                     </div>
                 </section>
             </li>
@@ -180,7 +182,7 @@
             <li class="page-3">
                 <input id="search" type="text" style="background: #ebecec;">
                 <ol id="searchResult">
-                    
+
                 </ol>
             </li>
         </ol>
@@ -210,24 +212,25 @@
         let $olSongs = $('ol#songs')
         var query = new AV.Query('Song');
         query.find().then(function (results) {
-            $('#songs-loading').remove()  //加载成功就将loading 去除
+            $('#songs-loading').remove() //加载成功就将loading 去除
             for (var i = 0; i < results.length; i++) {
                 let song = results[i].attributes
-                let li = `
+                let li =
+                    `
                 <li>
-                                <h3>${song.name}
-                                </h3>
-                                <p>
-                                    <svg class="icon icon-sq">
-                                        <use xlink:href="#icon-sq"></use>
-                                    </svg>
-                                    ${song.singer}</p>
-                                <a class="playButton" href="#">
-                                    <svg class="icon icon-play">
-                                        <use xlink:href="#icon-play"></use>
-                                    </svg>
-                                </a>
-                            </li>
+                    <h3>${song.name}
+                     </h3>
+                    <p>
+                        <svg class="icon icon-sq">
+                            <use xlink:href="#icon-sq"></use>
+                        </svg>
+                    ${song.singer}</p>
+                        <a class="playButton" href="#">
+                        <svg class="icon icon-play">
+                            <use xlink:href="#icon-play"></use>
+                        </svg>
+                        </a>
+                </li>
                 `
                 $olSongs.append(li)
             }
@@ -235,27 +238,47 @@
             alert('获取歌曲失败')
         })
 
-        $('input#search').on('input', function (e) {
-            let $input = $(e.currentTarget)
-            let value = $input.val().trim()
-             if(value === ''){return}
-            var query = new AV.Query('Song');
-            query.contains('name', value);
-            query.find().then(function (results) {
-                $('#searchResult').empty() //成功之后将之前的结果清除
-                if (results.length === 0) {
-                    $('#searchResult').html('没有结果')
-                } else {
-                    for (var i = 0; i < results.length; i++) {
-                        let song = results[i].attributes
-                        let li = `
-                        <li date-id="${song.objectId}">${song.name}-${song.singer}</li>
-                    `
-                        $('#searchResult').append(li)
-                    }
+        let timer = null
 
-                }
-            })
+        $('input#search').on('input', function (e) {
+            if (timer) {
+                window.clearTimeout(timer) //如果有闹钟就清除闹钟
+            }
+            timer = setTimeout(function () { //设置一个新的闹钟
+                timer = null //闹钟时间到了，就清空所有
+
+                let $input = $(e.currentTarget)
+                let value = $input.val().trim()
+                if (value === '') {return}
+                var query1 = new AV.Query('Song');
+                query1.contains('name', value);//查歌名
+                var query2 = new AV.Query('Song');
+                query2.contains('singer', value);//查歌手
+                var query = AV.Query.or(query1, query2);//组合查询
+                query.find().then(function (results) {
+                    $('#searchResult').empty() //成功之后将之前的结果清除
+                    if (results.length === 0) {
+                        $('#searchResult').html('没有结果')
+                    } else {
+                        for (var i = 0; i < results.length; i++) {
+                            let song = results[i].attributes
+                            let li =
+                                `
+                        <li date-id="${results[i].id}">
+                            <a href="./song.html?id=${results[i].id}">
+                               ${song.name}-${song.singer}
+                            </a>
+                        </li>
+                    `
+                            $('#searchResult').append(li)
+
+                            //href="./song.html?id=${results[i].id} URL可以传查询参数
+                        }
+
+                    }
+                })
+
+            }, 400)
         })
 
 
@@ -263,7 +286,7 @@
             var SongObject = AV.Object.extend('Song');// 选择表名
             var songObject = new SongObject();//生成一条数据
         */
-        
+
         /* 批量上传
             songObject.set('name','1')
             var songObject2 = new SongObject()
